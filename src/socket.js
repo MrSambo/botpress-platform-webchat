@@ -3,6 +3,7 @@ import Promise from 'bluebird'
 
 import users from './users'
 import db from './db'
+const util = require('util')
 
 const outgoingTypes = ['text', 'login_prompt']
 
@@ -35,15 +36,16 @@ module.exports = async (bp, config) => {
     if (!_.includes(outgoingTypes, event.type)) {
       return next('Unsupported event type: ' + event.type)
     }
-    
-    let user = await getOrCreateUser(event.user.id)
+
+    let userId = event.user.id.startsWith('webchat:') ? event.user.id.substr(8) : event.user.id
+    let user = await getOrCreateUser(userId);
 
     const typing = parseTyping(event)
 
     const conversationId = _.get(event, 'raw.conversationId')
-      || await getOrCreateRecentConversation(user.id)
+      || await getOrCreateRecentConversation(user.userId)
 
-    const socketId = user.userId.replace('webchat:', '')
+    let socketId = user.id.replace('webchat:', '')
 
     if (typing) {
       bp.events.emit('guest.webchat.typing', { 
@@ -55,15 +57,12 @@ module.exports = async (bp, config) => {
 
       await Promise.delay(typing)
     }
-
-    const message = await appendBotMessage(bot_name, bot_avatar, conversationId, event)
-
+    let message = await appendBotMessage(bot_name, bot_avatar, conversationId, event)
+    bp.events.emit('guest.webchat.message', message)
     Object.assign(message, {
       __room: 'visitor:' + socketId // This is used to send to the relevant user's socket
     })
-
-    bp.events.emit('guest.webchat.message', message)
-
+    
     // Resolve the event promise
     event._promise && event._resolve && event._resolve()
   }

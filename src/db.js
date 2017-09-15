@@ -2,6 +2,7 @@ import Promise from 'bluebird'
 import moment from 'moment'
 import _ from 'lodash'
 import uuid from 'uuid'
+const util = require('util')
 
 import { DatabaseHelpers as helpers } from 'botpress'
 
@@ -123,7 +124,6 @@ module.exports = (knex, botfile) => {
     .where({ title, userId })
     .select('id')
     .then().get(0).then()
-
     return conversation && conversation.id
   }
 
@@ -140,7 +140,7 @@ module.exports = (knex, botfile) => {
 
   async function getOrCreateRecentConversation(userId) {
     const conversations = await listConversations(userId)
-
+    
     // TODO make this configurable
     const isRecent = d => {
       const then = moment(d)
