@@ -13,7 +13,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "node webpack.js --watch",
-    "prepare": "node webpack.js --compile",
     "compile": "node webpack.js --compile"
   },
   "repository": {
