@@ -1271,12 +1271,9 @@ module.exports =
 	
 	            case 6:
 	              conversation = _context4.sent;
-	
-	              console.log('\n CONVO USER ID: ' + userId);
-	              console.log('\n NEW CONVERSATION: ' + util.inspect(conversation));
 	              return _context4.abrupt('return', conversation && conversation.id);
 	
-	            case 10:
+	            case 8:
 	            case 'end':
 	              return _context4.stop();
 	          }
@@ -1328,9 +1325,7 @@ module.exports =
 	            case 2:
 	              conversations = _context6.sent;
 	
-	              console.log('\n CONVERSATIONS: ' + util.inspect(conversations));
 	              // TODO make this configurable
-	
 	              isRecent = function isRecent(d) {
 	                var then = (0, _moment2.default)(d);
 	                var recent = (0, _moment2.default)().subtract(6, 'hours');
@@ -1344,16 +1339,16 @@ module.exports =
 	              recents = _lodash2.default.orderBy(recents, ['last_heard_on'], ['desc']);
 	
 	              if (!recents.length) {
-	                _context6.next = 9;
+	                _context6.next = 8;
 	                break;
 	              }
 	
 	              return _context6.abrupt('return', recents[0].id);
 	
-	            case 9:
+	            case 8:
 	              return _context6.abrupt('return', createConversation(userId));
 	
-	            case 10:
+	            case 9:
 	            case 'end':
 	              return _context6.stop();
 	          }
@@ -1558,40 +1553,38 @@ module.exports =
 	            switch (_context.prev = _context.next) {
 	              case 0:
 	                realUserId = userId.startsWith('webchat:') ? userId.substr(8) : userId;
-	
-	                console.log('\nREAL USER ID: ' + realUserId);
-	                _context.next = 4;
+	                _context.next = 3;
 	                return knex('users').where({
 	                  platform: 'webchat',
 	                  userId: realUserId
 	                }).then().get(0).then();
 	
-	              case 4:
+	              case 3:
 	                user = _context.sent;
 	
 	                if (user) {
-	                  _context.next = 11;
+	                  _context.next = 10;
 	                  break;
 	                }
 	
 	                if (!throwIfNotFound) {
-	                  _context.next = 8;
+	                  _context.next = 7;
 	                  break;
 	                }
 	
 	                throw new Error('User ' + realUserId + ' not found');
 	
-	              case 8:
-	                _context.next = 10;
+	              case 7:
+	                _context.next = 9;
 	                return createNewUser(realUserId);
 	
-	              case 10:
+	              case 9:
 	                return _context.abrupt('return', getOrCreateUser(realUserId, true));
 	
-	              case 11:
+	              case 10:
 	                return _context.abrupt('return', user);
 	
-	              case 12:
+	              case 11:
 	              case 'end':
 	                return _context.stop();
 	            }
@@ -1698,8 +1691,6 @@ module.exports =
 	
 	var util = __webpack_require__(5);
 	
-	// CONVO USER ID: 7d334f0e- 6b7a- 4e9b- b4ed - 9b0dbfcdb6d1
-	// CONVO USER ID: webchat: webchat: 7d334f0e- 6b7a- 4e9b- b4ed - 9b0dbfcdb6d1
 	var outgoingTypes = ['text', 'login_prompt'];
 	
 	module.exports = function () {
